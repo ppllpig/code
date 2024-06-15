@@ -192,11 +192,12 @@ acme (){
     echo -e "${Green}开始申请证书${Font}"
     docker exec ${TEMP} --register-account  -m your@domain.com --server zerossl
     docker exec ${TEMP} --issue $* --keylength 2048 --dns ${DNSAPI} -d ${DOMAIN} -d \*.${DOMAIN}
-
+    docker exec ${TEMP} --install-cert --domain ${DOMAIN} \ --fullchain-file ${WORK_PATH}/${TEMP}/${DOMAIN}.crt \ --key-file ${WORK_PATH}/${TEMP}/${DOMAIN}.key
+    
     # docker exec ${TEMP} --issue --server letsencrypt $* --dns ${DNSAPI} -d ${DOMAIN} -d \*.${DOMAIN}
 
     # deploy
-    if [ -f "${WORK_PATH}/${TEMP}/${DOMAIN}/fullchain.cer" ] ; then
+    if [ -f "${WORK_PATH}/${TEMP}/${DOMAIN}/${DOMAIN}.crt" ] ; then
         if [ ! -d "${WORK_PATH}/${DOMAIN}" ]; then
             mv ${WORK_PATH}/${TEMP}/${DOMAIN} ${WORK_PATH}/
             echo -e "${Green}=========================================================================================${Font}"
