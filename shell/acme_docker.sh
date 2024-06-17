@@ -191,8 +191,8 @@ acme (){
 
     echo -e "${Green}开始申请证书${Font}"
     docker exec ${TEMP} --register-account  -m your@domain.com --server zerossl
-    docker exec ${TEMP} --issue --dns ${DNSAPI} -d ${DOMAIN} -d \*.${DOMAIN}    
-    docker exec ${TEMP} --install-cert --d ${DOMAIN} \ --fullchain-file ${WORK_PATH}/${DOMAIN}.crt \ --key-file ${WORK_PATH}/${DOMAIN}.key
+    docker exec ${TEMP} --issue $* --keylength 2048 --dns ${DNSAPI} -d ${DOMAIN} 
+    docker exec ${TEMP} --install-cert $* -w ./${DOMAIN} -d ${DOMAIN} --fullchain-file ${DOMAIN}.crt --key-file ${DOMAIN}.key 
     
     # docker exec ${TEMP} --issue --server letsencrypt $* --dns ${DNSAPI} -d ${DOMAIN} -d \*.${DOMAIN}
 
