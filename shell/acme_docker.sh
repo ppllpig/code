@@ -191,19 +191,19 @@ acme (){
 
     echo -e "${Green}开始申请证书${Font}"
     docker exec ${TEMP} --register-account  -m your@domain.com --server zerossl
-    docker exec ${TEMP} --issue $* --keylength 2048 --dns ${DNSAPI} -d ${DOMAIN} 
-    docker exec ${TEMP} --install-cert $* -w ./${DOMAIN} -d ${DOMAIN} --fullchain-file ${DOMAIN}.crt --key-file ${DOMAIN}.key 
-    
+    docker exec ${TEMP} --issue $* --keylength 2048 --dns ${DNSAPI} -d ${DOMAIN} -d \*.${DOMAIN}
+
     # docker exec ${TEMP} --issue --server letsencrypt $* --dns ${DNSAPI} -d ${DOMAIN} -d \*.${DOMAIN}
 
     # deploy
-    if [ -f "${WORK_PATH}/${TEMP}/${DOMAIN}/${DOMAIN}.crt" ] ; then
+    if [ -f "${WORK_PATH}/${TEMP}/${DOMAIN}/fullchain.cer" ] ; then
+    cp ${WORK_PATH}/${TEMP}/${DOMAIN}/fullchain.cer ${WORK_PATH}/${TEMP}/${DOMAIN}/${DOMAIN}.crt
         if [ ! -d "${WORK_PATH}/${DOMAIN}" ]; then
             mv ${WORK_PATH}/${TEMP}/${DOMAIN} ${WORK_PATH}/
             echo -e "${Green}=========================================================================================${Font}"
             echo -e "${Green}证书申请成功,相关临时文件及容器镜像已清理完毕.${Font}"
             echo -e "${Green}证书文件目录:${Font} ${Red}${WORK_PATH}/${DOMAIN}${Font}"
-            echo -e "${Green}全链证书文件:${Font} ${Red}fullchain.cer${Font}"
+            echo -e "${Green}全链证书文件:${Font} ${Red}${DOMAIN}.crt${Font}"
             echo -e "${Green}证书密钥文件:${Font} ${Red}${DOMAIN}.key${Font}"
             echo -e "${Green}=========================================================================================${Font}"
         else
@@ -212,7 +212,7 @@ acme (){
             echo -e "${Green}证书申请成功,相关临时文件及容器镜像已清理完毕.${Font}"
             echo -e "${Red}检测到 ${WORK_PATH}/${DOMAIN} 目录已存在,已创建新的证书文件目录.${Font}"
             echo -e "${Green}证书文件目录:${Font} ${Red}${WORK_PATH}/${DOMAIN}-new-${TEMP}${Font}${Font}"
-            echo -e "${Green}全链证书文件:${Font} ${Red}fullchain.cer${Font}"
+            echo -e "${Green}全链证书文件:${Font} ${Red}${DOMAIN}.crt${Font}"
             echo -e "${Green}证书密钥文件:${Font} ${Red}${DOMAIN}.key${Font}"
             echo -e "${Green}=========================================================================================${Font}"
         fi
